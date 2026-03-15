@@ -1,6 +1,6 @@
 import React from 'react';
 import { Product, ProductWithUI, CartItem, Coupon } from '../../../types';
-import ShopContainer from '../../components/shop/ShopContainer';
+import ShopContainer from './ShopContainer';
 
 interface ShopPageProps {
   products: ProductWithUI[];

@@ -1,6 +1,6 @@
 import React from 'react';
 import { ProductWithUI, Coupon } from '../../../types';
-import AdminContainer from '../../components/admin/AdminContainer';
+import AdminContainer from './AdminContainer';
 
 interface AdminPageProps {
   products: ProductWithUI[];

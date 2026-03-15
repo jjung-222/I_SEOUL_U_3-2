@@ -1,7 +1,7 @@
-import { Coupon } from '../../../types';
-import { formatPrice } from '../../utils/formatters';
-import { isNumeric } from '../../utils/validators';
-import { useValidate } from '../../utils/hooks/useValidate';
+import { Coupon } from '../../../../types';
+import { formatPrice } from '../../../utils/formatters';
+import { isNumeric } from '../../../utils/validators';
+import { useValidate } from '../../../utils/hooks/useValidate';
 
 interface CouponMagerTabProps {
   coupons: Coupon[];

@@ -1,8 +1,8 @@
 import { useState, useCallback } from 'react';
 import { ProductWithUI } from '../types';
 import Header from './components/layout/Header';
-import AdminPage from './pages/admin/AdminPage';
-import ShopPage from './pages/shop/ShopPage';
+import AdminPage from './components/admin/AdminPage';
+import ShopPage from './components/shop/ShopPage';
 import { useNotificationStore } from './store/useNotificationStore';
 import NotificationList from './components/ui/NotificationList';
 import { useCart } from './hooks/useCart';

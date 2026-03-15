@@ -1,6 +1,6 @@
-import { ProductWithUI } from '../../../types';
-import { isNumeric } from '../../utils/validators';
-import { useValidate } from '../../utils/hooks/useValidate';
+import { ProductWithUI } from '../../../../types';
+import { isNumeric } from '../../../utils/validators';
+import { useValidate } from '../../../utils/hooks/useValidate';
 
 interface ProductMangerTabProps {
   products: ProductWithUI[];

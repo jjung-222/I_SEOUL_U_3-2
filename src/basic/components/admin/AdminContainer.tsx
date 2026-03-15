@@ -1,7 +1,7 @@
 import React from 'react';
 import { ProductWithUI, Coupon } from '../../../types';
-import ProductMangerTab from './ProductMangerTab';
-import CouponMagerTab from './CouponMagerTab';
+import ProductMangerTab from './product/ProductMangerTab';
+import CouponMagerTab from './coupon/CouponMagerTab';
 import AdminTabs from './AdminTabs';
 
 interface AdminContainerProps {
