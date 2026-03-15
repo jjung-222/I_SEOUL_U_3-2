@@ -1,18 +1,11 @@
 import React from 'react';
 import { formatPrice } from '../../../utils/formatters';
+import { useCartStore } from '../../../store/useCartStore';
 
-interface PaymentProps {
-  totals: {
-    totalBeforeDiscount: number;
-    totalAfterDiscount: number;
-  };
-  completeOrder: () => void;
-}
+const Payment: React.FC = () => {
+  const { calculateCartTotal, completeOrder } = useCartStore();
+  const totals = calculateCartTotal();
 
-const Payment: React.FC<PaymentProps> = ({
-  totals,
-  completeOrder,
-}) => {
   return (
     <section className="bg-white rounded-lg border border-gray-200 p-4">
       <h3 className="text-lg font-semibold mb-4">결제 정보</h3>

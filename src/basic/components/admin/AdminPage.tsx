@@ -1,14 +1,11 @@
 import React from 'react';
-import { ProductWithUI, Coupon } from '../../../types';
 import AdminContainer from './AdminContainer';
 
 interface AdminPageProps {
-  products: ProductWithUI[];
   activeTab: 'products' | 'coupons';
   setActiveTab: (tab: 'products' | 'coupons') => void;
   formatPrice: (price: number, id?: string) => string;
-  startEditProduct: (product: ProductWithUI) => void;
-  deleteProduct: (id: string) => void;
+  startEditProduct: (product: any) => void;
   showProductForm: boolean;
   setShowProductForm: (show: boolean) => void;
   productForm: {
@@ -22,9 +19,6 @@ interface AdminPageProps {
   editingProduct: string | null;
   setEditingProduct: (id: string | null) => void;
   handleProductSubmit: (e: React.FormEvent) => void;
-  addNotification: (message: string, type?: 'error' | 'success' | 'warning') => void;
-  coupons: Coupon[];
-  deleteCoupon: (code: string) => void;
   showCouponForm: boolean;
   setShowCouponForm: (show: boolean) => void;
   couponForm: {

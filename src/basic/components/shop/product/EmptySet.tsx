@@ -1,13 +1,13 @@
 import React from 'react';
 
 interface EmptySetProps {
-  searchTerm: string;
+  debouncedSearchTerm: string;
 }
 
-const EmptySet: React.FC<EmptySetProps> = ({ searchTerm }) => {
+const EmptySet: React.FC<EmptySetProps> = ({ debouncedSearchTerm }) => {
   return (
     <div className="text-center py-12">
-      <p className="text-gray-500">"{searchTerm}"에 대한 검색 결과가 없습니다.</p>
+      <p className="text-gray-500">"{debouncedSearchTerm}"에 대한 검색 결과가 없습니다.</p>
     </div>
   );
 };

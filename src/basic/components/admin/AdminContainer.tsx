@@ -1,16 +1,13 @@
 import React from 'react';
-import { ProductWithUI, Coupon } from '../../../types';
 import ProductMangerTab from './product/ProductMangerTab';
 import CouponMagerTab from './coupon/CouponMagerTab';
 import AdminTabs from './AdminTabs';
 
 interface AdminContainerProps {
-  products: ProductWithUI[];
   activeTab: 'products' | 'coupons';
   setActiveTab: (tab: 'products' | 'coupons') => void;
   formatPrice: (price: number, id?: string) => string;
-  startEditProduct: (product: ProductWithUI) => void;
-  deleteProduct: (id: string) => void;
+  startEditProduct: (product: any) => void;
   showProductForm: boolean;
   setShowProductForm: (show: boolean) => void;
   productForm: {
@@ -24,9 +21,6 @@ interface AdminContainerProps {
   editingProduct: string | null;
   setEditingProduct: (id: string | null) => void;
   handleProductSubmit: (e: React.FormEvent) => void;
-  addNotification: (message: string, type?: 'error' | 'success' | 'warning') => void;
-  coupons: Coupon[];
-  deleteCoupon: (code: string) => void;
   showCouponForm: boolean;
   setShowCouponForm: (show: boolean) => void;
   couponForm: {
@@ -40,12 +34,10 @@ interface AdminContainerProps {
 }
 
 const AdminContainer: React.FC<AdminContainerProps> = ({
-  products,
   activeTab,
   setActiveTab,
   formatPrice,
   startEditProduct,
-  deleteProduct,
   showProductForm,
   setShowProductForm,
   productForm,
@@ -53,9 +45,6 @@ const AdminContainer: React.FC<AdminContainerProps> = ({
   editingProduct,
   setEditingProduct,
   handleProductSubmit,
-  addNotification,
-  coupons,
-  deleteCoupon,
   showCouponForm,
   setShowCouponForm,
   couponForm,
@@ -73,10 +62,8 @@ const AdminContainer: React.FC<AdminContainerProps> = ({
 
       {activeTab === 'products' ? (
         <ProductMangerTab 
-          products={products}
           formatPrice={formatPrice}
           startEditProduct={startEditProduct}
-          deleteProduct={deleteProduct}
           showProductForm={showProductForm}
           setShowProductForm={setShowProductForm}
           productForm={productForm}
@@ -84,18 +71,14 @@ const AdminContainer: React.FC<AdminContainerProps> = ({
           editingProduct={editingProduct}
           setEditingProduct={setEditingProduct}
           handleProductSubmit={handleProductSubmit}
-          addNotification={addNotification}
         />
       ) : (
         <CouponMagerTab 
-          coupons={coupons}
-          deleteCoupon={deleteCoupon}
           showCouponForm={showCouponForm}
           setShowCouponForm={setShowCouponForm}
           couponForm={couponForm}
           setCouponForm={setCouponForm}
           handleCouponSubmit={handleCouponSubmit}
-          addNotification={addNotification}
         />
       )}
     </div>

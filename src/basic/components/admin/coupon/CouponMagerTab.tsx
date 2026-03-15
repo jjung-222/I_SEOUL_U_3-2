@@ -1,11 +1,11 @@
-import { Coupon } from '../../../../types';
+import React from 'react';
 import { formatPrice } from '../../../utils/formatters';
 import { isNumeric } from '../../../utils/validators';
 import { useValidate } from '../../../utils/hooks/useValidate';
+import { useCouponStore } from '../../../store/useCouponStore';
+import { useNotificationStore } from '../../../store/useNotificationStore';
 
 interface CouponMagerTabProps {
-  coupons: Coupon[];
-  deleteCoupon: (code: string) => void;
   showCouponForm: boolean;
   setShowCouponForm: (show: boolean) => void;
   couponForm: {
@@ -16,20 +16,18 @@ interface CouponMagerTabProps {
   };
   setCouponForm: (form: any) => void;
   handleCouponSubmit: (e: React.FormEvent) => void;
-  addNotification: (message: string, type?: 'error' | 'success' | 'warning') => void;
 }
 
 const CouponMagerTab: React.FC<CouponMagerTabProps> = ({
-  coupons,
-  deleteCoupon,
   showCouponForm,
   setShowCouponForm,
   couponForm,
   setCouponForm,
   handleCouponSubmit,
-  addNotification,
 }) => {
-  const { validateCouponCode, validateDiscountValue } = useValidate();
+  const { coupons, deleteCoupon } = useCouponStore();
+  const { addNotification } = useNotificationStore();
+  const { validateDiscountValue } = useValidate();
 
   return (
     <section className="bg-white rounded-lg border border-gray-200">

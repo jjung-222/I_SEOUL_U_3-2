@@ -1,54 +1,27 @@
 import { useState, useCallback } from 'react';
-import { ProductWithUI } from '../types';
 import Header from './components/layout/Header';
 import AdminPage from './components/admin/AdminPage';
 import ShopPage from './components/shop/ShopPage';
-import { useNotificationStore } from './store/useNotificationStore';
 import NotificationList from './components/ui/NotificationList';
-import { useCart } from './hooks/useCart';
-import { useCoupons } from './hooks/useCoupons';
-import { useProducts } from './hooks/useProducts';
+import { useProductStore } from './store/useProductStore';
+import { useCouponStore } from './store/useCouponStore';
+import { useCartStore } from './store/useCartStore';
 import { formatPrice as formatPriceUtil } from './utils/formatters';
 import { useDebounce } from './utils/hooks/useDebounce';
 
 const App = () => {
-  const {
-    products,
-    addProduct,
-    updateProduct,
-    deleteProduct
-  } = useProducts();
-
-  const {
-    coupons,
-    addCoupon,
-    deleteCoupon
-  } = useCoupons();
-
-  const {
-    cart,
-    selectedCoupon,
-    setSelectedCoupon,
-    addToCart,
-    removeFromCart,
-    updateQuantity,
-    applyCoupon,
-    completeOrder,
-    calculateCartTotal,
-    calculateItemTotal,
-    getRemainingStock,
-    totalItemCount
-  } = useCart();
+  const { products, addProduct, updateProduct, deleteProduct } = useProductStore();
+  const { addCoupon, deleteCoupon } = useCouponStore();
+  const { calculateCartTotal, getRemainingStock } = useCartStore();
 
   const [isAdmin, setIsAdmin] = useState(false);
-  const { addNotification } = useNotificationStore();
-  const [showCouponForm, setShowCouponForm] = useState(false);
   const [activeTab, setActiveTab] = useState<'products' | 'coupons'>('products');
   const [showProductForm, setShowProductForm] = useState(false);
+  const [showCouponForm, setShowCouponForm] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
-  // Admin
+  // Admin UI States
   const [editingProduct, setEditingProduct] = useState<string | null>(null);
   const [productForm, setProductForm] = useState({
     name: '',
@@ -65,7 +38,6 @@ const App = () => {
     discountValue: 0
   });
 
-
   const formatPrice = (price: number, productId?: string): string => {
     if (productId) {
       const product = products.find(p => p.id === productId);
@@ -81,34 +53,12 @@ const App = () => {
     return `₩${price.toLocaleString()}`;
   };
 
-
-
-
-
-
-  const handleUpdateQuantity = useCallback((productId: string, newQuantity: number) => {
-    updateQuantity(productId, newQuantity, products);
-  }, [updateQuantity, products]);
-
-
-  const handleDeleteCoupon = useCallback((couponCode: string) => {
-    deleteCoupon(couponCode, () => {
-      if (selectedCoupon?.code === couponCode) {
-        setSelectedCoupon(null);
-      }
-    });
-  }, [deleteCoupon, selectedCoupon, setSelectedCoupon]);
-
   const handleProductSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (editingProduct && editingProduct !== 'new') {
       updateProduct(editingProduct, productForm);
-      setEditingProduct(null);
     } else {
-      addProduct({
-        ...productForm,
-        discounts: productForm.discounts
-      });
+      addProduct(productForm);
     }
     setProductForm({ name: '', price: 0, stock: 0, description: '', discounts: [] });
     setEditingProduct(null);
@@ -127,7 +77,7 @@ const App = () => {
     setShowCouponForm(false);
   };
 
-  const startEditProduct = (product: ProductWithUI) => {
+  const startEditProduct = (product: any) => {
     setEditingProduct(product.id);
     setProductForm({
       name: product.name,
@@ -138,8 +88,6 @@ const App = () => {
     });
     setShowProductForm(true);
   };
-
-  const totals = calculateCartTotal();
 
   const filteredProducts = debouncedSearchTerm
     ? products.filter(product => 
@@ -156,18 +104,16 @@ const App = () => {
         setIsAdmin={setIsAdmin}
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
-        cartCount={totalItemCount}
+        cartCount={0} // Header 내부에서 useCartStore로 관리하므로 0 전달 (무시됨)
       />
 
       <main className="max-w-7xl mx-auto px-4 py-8">
         {isAdmin ? (
           <AdminPage 
-            products={products}
             activeTab={activeTab}
             setActiveTab={setActiveTab}
             formatPrice={formatPrice}
             startEditProduct={startEditProduct}
-            deleteProduct={deleteProduct}
             showProductForm={showProductForm}
             setShowProductForm={setShowProductForm}
             productForm={productForm}
@@ -175,9 +121,6 @@ const App = () => {
             editingProduct={editingProduct}
             setEditingProduct={setEditingProduct}
             handleProductSubmit={handleProductSubmit}
-            addNotification={addNotification}
-            coupons={coupons}
-            deleteCoupon={handleDeleteCoupon}
             showCouponForm={showCouponForm}
             setShowCouponForm={setShowCouponForm}
             couponForm={couponForm}
@@ -186,22 +129,9 @@ const App = () => {
           />
         ) : (
           <ShopPage 
-            products={products}
             filteredProducts={filteredProducts}
             debouncedSearchTerm={debouncedSearchTerm}
-            getRemainingStock={getRemainingStock}
             formatPrice={formatPrice}
-            addToCart={addToCart}
-            cart={cart}
-            calculateItemTotal={calculateItemTotal}
-            removeFromCart={removeFromCart}
-            updateQuantity={handleUpdateQuantity}
-            coupons={coupons}
-            selectedCoupon={selectedCoupon}
-            setSelectedCoupon={setSelectedCoupon}
-            applyCoupon={applyCoupon}
-            totals={totals}
-            completeOrder={completeOrder}
           />
         )}
       </main>

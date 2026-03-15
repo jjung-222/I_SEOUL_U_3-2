@@ -1,44 +1,39 @@
-import { Product, ProductWithUI } from '../../../../types';
-import EmptySet from './EmptySet';
+import React from 'react';
 import ProductList from './ProductList';
+import EmptySet from './EmptySet';
+import { useProductStore } from '../../../store/useProductStore';
 
 interface ProductSectionProps {
-  products: ProductWithUI[];
-  filteredProducts: ProductWithUI[];
+  filteredProducts: any[];
   debouncedSearchTerm: string;
-  getRemainingStock: (product: Product) => number;
   formatPrice: (price: number, id?: string) => string;
-  addToCart: (product: Product) => void;
 }
 
 const ProductSection: React.FC<ProductSectionProps> = ({
-  products,
   filteredProducts,
   debouncedSearchTerm,
-  getRemainingStock,
   formatPrice,
-  addToCart,
 }) => {
+  const { products } = useProductStore();
+
   return (
     <div className="lg:col-span-3">
-        <section>
-        <div className="mb-6 flex justify-between items-center">
-            <h2 className="text-2xl font-semibold text-gray-800">전체 상품</h2>
-            <div className="text-sm text-gray-600">
-            총 {products.length}개 상품
-            </div>
+      {/* 상품 헤더 */}
+      <div className="mb-6 flex justify-between items-center">
+        <h2 className="text-2xl font-bold text-gray-900">전체 상품</h2>
+        <div className="text-sm text-gray-500 font-medium">
+          총 {products.length}개 상품
         </div>
-        {filteredProducts.length === 0 ? (
-            <EmptySet searchTerm={debouncedSearchTerm} />
-        ) : (
-            <ProductList 
-                filteredProducts={filteredProducts}
-                getRemainingStock={getRemainingStock}
-                formatPrice={formatPrice}
-                addToCart={addToCart}
-            />
-        )}
-        </section>
+      </div>
+
+      {filteredProducts.length > 0 ? (
+        <ProductList 
+          filteredProducts={filteredProducts}
+          formatPrice={formatPrice}
+        />
+      ) : (
+        <EmptySet debouncedSearchTerm={debouncedSearchTerm} />
+      )}
     </div>
   );
 };

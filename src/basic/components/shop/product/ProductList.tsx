@@ -1,19 +1,17 @@
 import React from 'react';
-import { Product, ProductWithUI } from '../../../../types';
+import { useCartStore } from '../../../store/useCartStore';
 
 interface ProductListProps {
-  filteredProducts: ProductWithUI[];
-  getRemainingStock: (product: Product) => number;
+  filteredProducts: any[];
   formatPrice: (price: number, id?: string) => string;
-  addToCart: (product: Product) => void;
 }
 
 const ProductList: React.FC<ProductListProps> = ({
   filteredProducts,
-  getRemainingStock,
   formatPrice,
-  addToCart,
 }) => {
+  const { addToCart, getRemainingStock } = useCartStore();
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       {filteredProducts.map(product => {
@@ -29,13 +27,13 @@ const ProductList: React.FC<ProductListProps> = ({
                 </svg>
               </div>
               {product.isRecommended && (
-                <span className="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded">
+                <span className="absolute top-2 right-2 bg-red-500 text-white text-[10px] px-2 py-1 rounded font-bold uppercase tracking-wider">
                   BEST
                 </span>
               )}
-              {product.discounts.length > 0 && (
-                <span className="absolute top-2 left-2 bg-orange-500 text-white text-xs px-2 py-1 rounded">
-                  ~{Math.max(...product.discounts.map((d: { rate: number }) => d.rate)) * 100}%
+              {product.discounts && product.discounts.length > 0 && (
+                <span className="absolute top-2 left-2 bg-orange-500 text-white text-[10px] px-2 py-1 rounded font-bold">
+                  ~{Math.max(...product.discounts.map((d: any) => d.rate)) * 100}%
                 </span>
               )}
             </div>
@@ -44,26 +42,25 @@ const ProductList: React.FC<ProductListProps> = ({
             <div className="p-4">
               <h3 className="font-medium text-gray-900 mb-1">{product.name}</h3>
               {product.description && (
-                <p className="text-sm text-gray-500 mb-2 line-clamp-2">{product.description}</p>
+                <p className="text-sm text-gray-500 mb-2 line-clamp-2 min-h-[40px]">{product.description}</p>
               )}
               
               {/* 가격 정보 */}
               <div className="mb-3">
                 <p className="text-lg font-bold text-gray-900">{formatPrice(product.price, product.id)}</p>
-                {product.discounts.length > 0 && (
-                  <p className="text-xs text-gray-500">
+                {product.discounts && product.discounts.length > 0 && (
+                  <p className="text-[11px] text-gray-400">
                     {product.discounts[0].quantity}개 이상 구매시 할인 {product.discounts[0].rate * 100}%
                   </p>
                 )}
               </div>
               
               {/* 재고 상태 */}
-              <div className="mb-3">
-                {remainingStock <= 5 && remainingStock > 0 && (
-                  <p className="text-xs text-red-600 font-medium">품절임박! {remainingStock}개 남음</p>
-                )}
-                {remainingStock > 5 && (
-                  <p className="text-xs text-gray-500">재고 {remainingStock}개</p>
+              <div className="mb-4">
+                {remainingStock <= 5 && remainingStock > 0 ? (
+                  <p className="text-[11px] text-red-600 font-medium">품절임박! {remainingStock}개 남음</p>
+                ) : (
+                  <p className="text-[11px] text-gray-400">재고 {remainingStock}개</p>
                 )}
               </div>
               
@@ -71,10 +68,10 @@ const ProductList: React.FC<ProductListProps> = ({
               <button
                 onClick={() => addToCart(product)}
                 disabled={remainingStock <= 0}
-                className={`w-full py-2 px-4 rounded-md font-medium transition-colors ${
+                className={`w-full py-2.5 px-4 rounded-md font-medium transition-colors text-sm ${
                   remainingStock <= 0
                     ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                    : 'bg-gray-900 text-white hover:bg-gray-800'
+                    : 'bg-[#1a1c23] text-white hover:bg-[#2d303d]'
                 }`}
               >
                 {remainingStock <= 0 ? '품절' : '장바구니 담기'}

@@ -3,12 +3,20 @@ import { render, screen, fireEvent, within, waitFor } from '@testing-library/rea
 import { vi } from 'vitest';
 import App from '../App';
 import '../../setupTests';
+import { useProductStore } from '../store/useProductStore';
+import { useCartStore } from '../store/useCartStore';
+import { useCouponStore } from '../store/useCouponStore';
 import { useNotificationStore } from '../store/useNotificationStore';
 
 describe('쇼핑몰 앱 통합 테스트', () => {
   beforeEach(() => {
     // localStorage 초기화
     localStorage.clear();
+    // zustand store 초기화
+    useProductStore.getState().resetStore();
+    useCartStore.getState().resetStore();
+    useCouponStore.getState().resetStore();
+    
     // console 경고 무시
     vi.spyOn(console, 'warn').mockImplementation(() => {});
     vi.spyOn(console, 'log').mockImplementation(() => {});

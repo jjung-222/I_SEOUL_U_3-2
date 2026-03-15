@@ -1,20 +1,12 @@
 import React from 'react';
-import { Coupon as CouponType } from '../../../../types';
 import { formatPrice } from '../../../utils/formatters';
+import { useCartStore } from '../../../store/useCartStore';
+import { useCouponStore } from '../../../store/useCouponStore';
 
-interface CouponProps {
-  coupons: CouponType[];
-  selectedCoupon: CouponType | null;
-  applyCoupon: (coupon: CouponType) => void;
-  setSelectedCoupon: (coupon: CouponType | null) => void;
-}
+const Coupon: React.FC = () => {
+  const { selectedCoupon, applyCoupon, setSelectedCoupon } = useCartStore();
+  const { coupons } = useCouponStore();
 
-const Coupon: React.FC<CouponProps> = ({
-  coupons,
-  selectedCoupon,
-  applyCoupon,
-  setSelectedCoupon,
-}) => {
   return (
     <section className="bg-white rounded-lg border border-gray-200 p-4">
       <div className="flex items-center justify-between mb-3">

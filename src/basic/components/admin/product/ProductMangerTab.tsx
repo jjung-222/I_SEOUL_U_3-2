@@ -1,12 +1,12 @@
-import { ProductWithUI } from '../../../../types';
+import React from 'react';
 import { isNumeric } from '../../../utils/validators';
 import { useValidate } from '../../../utils/hooks/useValidate';
+import { useProductStore } from '../../../store/useProductStore';
+import { useNotificationStore } from '../../../store/useNotificationStore';
 
 interface ProductMangerTabProps {
-  products: ProductWithUI[];
   formatPrice: (price: number, id?: string) => string;
-  startEditProduct: (product: ProductWithUI) => void;
-  deleteProduct: (id: string) => void;
+  startEditProduct: (product: any) => void;
   showProductForm: boolean;
   setShowProductForm: (show: boolean) => void;
   productForm: {
@@ -20,14 +20,11 @@ interface ProductMangerTabProps {
   editingProduct: string | null;
   setEditingProduct: (id: string | null) => void;
   handleProductSubmit: (e: React.FormEvent) => void;
-  addNotification: (message: string, type?: 'error' | 'success' | 'warning') => void;
 }
 
 const ProductMangerTab: React.FC<ProductMangerTabProps> = ({
-  products,
   formatPrice,
   startEditProduct,
-  deleteProduct,
   showProductForm,
   setShowProductForm,
   productForm,
@@ -35,8 +32,9 @@ const ProductMangerTab: React.FC<ProductMangerTabProps> = ({
   editingProduct,
   setEditingProduct,
   handleProductSubmit,
-  addNotification,
 }) => {
+  const { products, deleteProduct } = useProductStore();
+  const { addNotification } = useNotificationStore();
   const { validatePrice, validateStock } = useValidate();
 
   return (
