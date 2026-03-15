@@ -1,5 +1,6 @@
 import React from 'react';
 import { CartItem } from '../../../../types';
+import { formatPrice, formatPercentage } from '../../../utils/formatters';
 
 interface CartProps {
   cart: CartItem[];
@@ -35,7 +36,7 @@ const Cart: React.FC<CartProps> = ({
             const itemTotal = calculateItemTotal(item);
             const originalPrice = item.product.price * item.quantity;
             const hasDiscount = itemTotal < originalPrice;
-            const discountRate = hasDiscount ? Math.round((1 - itemTotal / originalPrice) * 100) : 0;
+            const discountRate = 1 - itemTotal / originalPrice;
             
             return (
               <div key={item.product.id} className="border-b pb-3 last:border-b-0">
@@ -68,10 +69,10 @@ const Cart: React.FC<CartProps> = ({
                   </div>
                   <div className="text-right">
                     {hasDiscount && (
-                      <span className="text-xs text-red-500 font-medium block">-{discountRate}%</span>
+                      <span className="text-xs text-red-500 font-medium block">-{formatPercentage(discountRate)}</span>
                     )}
                     <p className="text-sm font-medium text-gray-900">
-                      {Math.round(itemTotal).toLocaleString()}원
+                      {formatPrice(Math.round(itemTotal))}
                     </p>
                   </div>
                 </div>

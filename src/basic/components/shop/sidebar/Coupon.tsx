@@ -1,5 +1,6 @@
 import React from 'react';
 import { Coupon as CouponType } from '../../../../types';
+import { formatPrice } from '../../../utils/formatters';
 
 interface CouponProps {
   coupons: CouponType[];
@@ -36,7 +37,7 @@ const Coupon: React.FC<CouponProps> = ({
           {coupons.map(coupon => (
             <option key={coupon.code} value={coupon.code}>
               {coupon.name} ({coupon.discountType === 'amount' 
-                ? `${coupon.discountValue.toLocaleString()}원` 
+                ? formatPrice(coupon.discountValue) 
                 : `${coupon.discountValue}%`})
             </option>
           ))}

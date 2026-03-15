@@ -1,5 +1,6 @@
-import React from 'react';
 import { ProductWithUI } from '../../../types';
+import { isNumeric } from '../../utils/validators';
+import { useValidate } from '../../utils/hooks/useValidate';
 
 interface ProductMangerTabProps {
   products: ProductWithUI[];
@@ -36,6 +37,8 @@ const ProductMangerTab: React.FC<ProductMangerTabProps> = ({
   handleProductSubmit,
   addNotification,
 }) => {
+  const { validatePrice, validateStock } = useValidate();
+
   return (
     <section className="bg-white rounded-lg border border-gray-200">
       <div className="p-6 border-b border-gray-200">
@@ -132,17 +135,16 @@ const ProductMangerTab: React.FC<ProductMangerTabProps> = ({
                   value={productForm.price === 0 ? '' : productForm.price}
                   onChange={(e) => {
                     const value = e.target.value;
-                    if (value === '' || /^\d+$/.test(value)) {
+                    if (value === '' || isNumeric(value)) {
                       setProductForm({ ...productForm, price: value === '' ? 0 : parseInt(value) });
                     }
                   }}
                   onBlur={(e) => {
-                    const value = e.target.value;
-                    if (value === '') {
-                      setProductForm({ ...productForm, price: 0 });
-                    } else if (parseInt(value) < 0) {
-                      addNotification('가격은 0보다 커야 합니다', 'error');
-                      setProductForm({ ...productForm, price: 0 });
+                    const value = parseInt(e.target.value) || 0;
+                    const result = validatePrice(value);
+                    if (e.target.value !== '' && !result.isValid) {
+                      addNotification(result.message, 'error');
+                      setProductForm({ ...productForm, price: result.fallbackValue });
                     }
                   }}
                   className="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 px-3 py-2 border"
@@ -157,20 +159,16 @@ const ProductMangerTab: React.FC<ProductMangerTabProps> = ({
                   value={productForm.stock === 0 ? '' : productForm.stock}
                   onChange={(e) => {
                     const value = e.target.value;
-                    if (value === '' || /^\d+$/.test(value)) {
+                    if (value === '' || isNumeric(value)) {
                       setProductForm({ ...productForm, stock: value === '' ? 0 : parseInt(value) });
                     }
                   }}
                   onBlur={(e) => {
-                    const value = e.target.value;
-                    if (value === '') {
-                      setProductForm({ ...productForm, stock: 0 });
-                    } else if (parseInt(value) < 0) {
-                      addNotification('재고는 0보다 커야 합니다', 'error');
-                      setProductForm({ ...productForm, stock: 0 });
-                    } else if (parseInt(value) > 9999) {
-                      addNotification('재고는 9999개를 초과할 수 없습니다', 'error');
-                      setProductForm({ ...productForm, stock: 9999 });
+                    const value = parseInt(e.target.value) || 0;
+                    const result = validateStock(value);
+                    if (e.target.value !== '' && !result.isValid) {
+                      addNotification(result.message, 'error');
+                      setProductForm({ ...productForm, stock: result.fallbackValue });
                     }
                   }}
                   className="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 px-3 py-2 border"

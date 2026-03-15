@@ -1,5 +1,7 @@
-import React from 'react';
 import { Coupon } from '../../../types';
+import { formatPrice } from '../../utils/formatters';
+import { isNumeric } from '../../utils/validators';
+import { useValidate } from '../../utils/hooks/useValidate';
 
 interface CouponMagerTabProps {
   coupons: Coupon[];
@@ -27,6 +29,8 @@ const CouponMagerTab: React.FC<CouponMagerTabProps> = ({
   handleCouponSubmit,
   addNotification,
 }) => {
+  const { validateCouponCode, validateDiscountValue } = useValidate();
+
   return (
     <section className="bg-white rounded-lg border border-gray-200">
       <div className="p-6 border-b border-gray-200">
@@ -43,7 +47,7 @@ const CouponMagerTab: React.FC<CouponMagerTabProps> = ({
                   <div className="mt-2">
                     <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-white text-indigo-700">
                       {coupon.discountType === 'amount' 
-                        ? `${coupon.discountValue.toLocaleString()}원 할인` 
+                        ? `${formatPrice(coupon.discountValue)} 할인` 
                         : `${coupon.discountValue}% 할인`}
                     </span>
                   </div>
@@ -123,26 +127,16 @@ const CouponMagerTab: React.FC<CouponMagerTabProps> = ({
                     value={couponForm.discountValue === 0 ? '' : couponForm.discountValue}
                     onChange={(e) => {
                       const value = e.target.value;
-                      if (value === '' || /^\d+$/.test(value)) {
+                      if (value === '' || isNumeric(value)) {
                         setCouponForm({ ...couponForm, discountValue: value === '' ? 0 : parseInt(value) });
                       }
                     }}
                     onBlur={(e) => {
                       const value = parseInt(e.target.value) || 0;
-                      if (couponForm.discountType === 'percentage') {
-                        if (value > 100) {
-                          addNotification('할인율은 100%를 초과할 수 없습니다', 'error');
-                          setCouponForm({ ...couponForm, discountValue: 100 });
-                        } else if (value < 0) {
-                          setCouponForm({ ...couponForm, discountValue: 0 });
-                        }
-                      } else {
-                        if (value > 100000) {
-                          addNotification('할인 금액은 100,000원을 초과할 수 없습니다', 'error');
-                          setCouponForm({ ...couponForm, discountValue: 100000 });
-                        } else if (value < 0) {
-                          setCouponForm({ ...couponForm, discountValue: 0 });
-                        }
+                      const result = validateDiscountValue(value, couponForm.discountType);
+                      if (!result.isValid) {
+                        addNotification(result.message, 'error');
+                        setCouponForm({ ...couponForm, discountValue: result.fallbackValue });
                       }
                     }}
                     className="w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 px-3 py-2 border text-sm"
