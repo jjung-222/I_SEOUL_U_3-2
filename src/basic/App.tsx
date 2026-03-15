@@ -3,8 +3,8 @@ import { CartItem, Coupon, Product, ProductWithUI, Notification } from '../types
 import Header from './components/layout/Header';
 import initialProducts from './data/products.json';
 import initialCoupons from './data/coupons.json';
-import AdminPage from './pages/AdminPage';
-import ShopPage from './pages/ShopPage';
+import AdminPage from './pages/admin/AdminPage';
+import ShopPage from './pages/shop/ShopPage';
 
 const App = () => {
   const [products, setProducts] = useState<ProductWithUI[]>(() => {
